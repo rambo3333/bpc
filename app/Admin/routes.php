@@ -21,7 +21,9 @@ Route::group([
     $router->resource('workers', WorkersController::class);
     $router->resource('stypes', StypesController::class);
     $router->resource('banners', BannersController::class);
+    $router->resource('applies', AppliesController::class);
 
     $router->get('/api/series', 'ApisController@series');
+    $router->post('/api/check', 'ApisController@check')->name('admin.api.check');
 
 });
