@@ -33,13 +33,20 @@ $('.grid-check-row').on('click', function () {
         }),
         contentType: 'application/json',  // 请求的数据格式为 JSON
         success: function (data) {  // 返回成功时会调用这个函数
-          swal({
-            title: '操作成功',
-            type: 'success'
-          }, function() {
-            // 用户点击 swal 上的 按钮时刷新页面
-            location.reload();
-          });
+          if (data.code == 0) {
+            swal({
+              title: data.msg,
+              type: 'success'
+            }, function() {
+              // 用户点击 swal 上的 按钮时刷新页面
+              location.reload();
+            });
+          } else {
+            swal({
+              title: data.msg,
+              type: 'error'
+            });
+          }
         }
       });
 

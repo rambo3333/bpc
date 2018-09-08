@@ -39,6 +39,10 @@ class ApisController extends Controller
 
         $apply = Apply::find($id);
 
+        if ($apply->status == 1) {
+            return ['code' => 1, 'msg' => '请勿重复审核'];
+        }
+
         $transaction_flag = true;
         DB::beginTransaction();
         //审核表，修改状态，审核通过
@@ -82,10 +86,10 @@ class ApisController extends Controller
                 Log::info('个代审核短信' . $msg);
             }
 
-            return 1;
+            return ['code' => 0, 'msg' => '操作成功'];
         } else {
             DB::rollBack();
-            return 0;
+            return ['code' => 1, 'msg' => '操作失败'];
         }
     }
 }
