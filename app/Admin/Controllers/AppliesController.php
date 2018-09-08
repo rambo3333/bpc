@@ -41,12 +41,20 @@ class AppliesController extends Controller
     {
         return Admin::content(function (Content $content) use ($id) {
 
-            $content->header('Detail');
+            $content->header('个代详情');
             $content->description('description');
 
             $content->body(Admin::show(Apply::findOrFail($id), function (Show $show) {
 
                 $show->id();
+
+                $show->name('姓名');
+                $show->mobile('手机号');
+                $show->id_number_image_z('身份证正面')->image();
+                $show->id_number_image_f('身份证反面')->image();
+                $show->other_image('其他证明资料')->image();
+                $show->bank_image('银行卡')->image();
+                $show->bank('开户行');
 
                 $show->created_at();
                 $show->updated_at();
