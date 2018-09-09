@@ -133,6 +133,16 @@ class CmodelsController extends Controller
             $form->text('zw', '座位数');
             $form->select('stype_id', '所属类型')->options(Stype::getSeletOptions());
 
+            $form->divide();
+
+            $form->radio('one_dszzrx_status', '（全款）第三者责任险是否必选')->options([0 => '否', 1=> '是'])->default(0);
+            $form->text('one_clssx', '（全款）车辆损失险');
+            $form->radio('one_clssx_status', '（全款）车辆损失险是否必选')->options([0 => '否', 1=> '是'])->default(0);
+            $form->text('one_qcdqx', '（全款）全车盗抢险');
+            $form->radio('one_qcdqx_status', '（全款）全车盗抢险是否必选')->options([0 => '否', 1=> '是'])->default(1);
+
+
+
             $form->display('created_at', 'Created At');
             $form->display('updated_at', 'Updated At');
         });
