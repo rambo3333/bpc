@@ -132,6 +132,7 @@ class CmodelsController extends Controller
             $form->text('pl', '排量');
             $form->text('zw', '座位数');
             $form->select('stype_id', '所属类型')->options(Stype::getSeletOptions());
+            $form->rate('syxzkbl', '商业险折扣比例')->help('请勿输入小数');
 
             $form->divide();
             $form->html('', $label = '（全款）');
