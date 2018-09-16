@@ -142,7 +142,7 @@ class CmodelsController extends Controller
                     ->default(1);
             $form->radio('one_dszzrx_default', '（第三者责任险）默认值')
                     ->options([1 => '50万', 2 => '100万'])
-                    ->default(1);
+                    ->default(2);
 
             $form->text('one_clssx', '（车辆损失险）金额');
             $form->radio('one_clssx_status', '（车辆损失险）是否必选')
@@ -195,7 +195,7 @@ class CmodelsController extends Controller
                     ->default(1);
             $form->radio('two_dszzrx_default', '（第三者责任险）默认值')
                     ->options([1 => '50万', 2 => '100万'])
-                    ->default(1);
+                    ->default(2);
 
             $form->text('two_clssx', '（车辆损失险）金额');
             $form->radio('two_clssx_status', '（车辆损失险）是否必选')
@@ -247,7 +247,7 @@ class CmodelsController extends Controller
                     ->default(1);
             $form->radio('three_dszzrx_default', '（第三者责任险）默认值')
                     ->options([1 => '50万', 2 => '100万'])
-                    ->default(1);
+                    ->default(2);
 
             $form->text('three_clssx', '（车辆损失险）金额');
             $form->radio('three_clssx_status', '（车辆损失险）是否必选')
