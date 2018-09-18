@@ -141,20 +141,17 @@ class CmodelsController extends Controller
                     ->options([0 => '否', 1 => '是'])
                     ->default(1);
             $form->radio('one_dszzrx_default', '（第三者责任险）默认值')
-                    ->options([1 => '50万', 2 => '100万'])
+                    ->options([1 => '50万', 2 => '100万', 3 => '150万'])
                     ->default(2);
 
-            $form->text('one_clssx', '（车辆损失险）金额');
             $form->radio('one_clssx_status', '（车辆损失险）是否必选')
                     ->options([0 => '否', 1 => '是'])
                     ->default(1);
 
-            $form->text('one_qcdqx', '（全车盗抢险）金额');
             $form->radio('one_qcdqx_status', '（全车盗抢险）是否必选')
                     ->options([0 => '否', 1 => '是'])
                     ->default(0);
 
-            $form->text('one_blddpsx', '（玻璃单独破碎险）金额');
             $form->radio('one_blddpsx_status', '（玻璃单独破碎险）是否必选')
                 ->options([0 => '否', 1 => '是'])
                 ->default(0);
