@@ -26,4 +26,9 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function worker()
+    {
+        return $this->belongsTo(Worker::class, 'worker_no', 'worker_no');
+    }
 }
