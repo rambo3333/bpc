@@ -55,7 +55,6 @@ class ApisController extends Controller
         $worker = new Worker;
         $worker->agent_id = $apply->agent_id;
         $worker->franchisee_id = $apply->franchisee_id;
-        $worker->username = $apply->username;
         $worker->password = $apply->password;
         $worker->name = $apply->name;
         $worker->mobile = $apply->mobile;
@@ -78,7 +77,7 @@ class ApisController extends Controller
             //发送审核通过的短信
             try {
                 $result = $easySms->send($apply->mobile, [
-                    'content'  =>  "【便便车】尊敬的用户，您的帐号{$worker->username}成功通过平台审核，如有疑问请联系客服。"
+                    'content'  =>  "【便便车】尊敬的用户，您的帐号{$worker->mobile}成功通过平台审核，如有疑问请联系客服。"
                 ]);
             } catch (\Overtrue\EasySms\Exceptions\NoGatewayAvailableException $exception) {
                 $message = $exception->getException('yunpian')->getMessage();
