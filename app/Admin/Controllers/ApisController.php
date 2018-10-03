@@ -59,11 +59,6 @@ class ApisController extends Controller
         $worker->name = $apply->name;
         $worker->mobile = $apply->mobile;
         $worker->worker_no = $apply->mobile;
-        $worker->id_number_image_z = $apply->id_number_image_z;
-        $worker->id_number_image_f = $apply->id_number_image_f;
-        $worker->other_image = $apply->other_image;
-        $worker->bank_image = $apply->bank_image;
-        $worker->bank = $apply->bank;
         $worker->parent_id = $apply->worker_id;
         $worker->user_id = $apply->user_id;
         $worker_flag = $worker->save();
@@ -74,10 +69,12 @@ class ApisController extends Controller
         if ($transaction_flag) {
             DB::commit();
 
+
+            $param = substr($worker->mobile, 0, 3) . '***';
             //发送审核通过的短信
             try {
                 $result = $easySms->send($apply->mobile, [
-                    'content'  =>  "【便便车】尊敬的用户，您的帐号{$worker->mobile}成功通过平台审核，如有疑问请联系客服。"
+                    'content'  =>  "【便便车】尊敬的用户，您的帐号{$param}成功通过平台审核，如有疑问请联系客服。"
                 ]);
             } catch (\Overtrue\EasySms\Exceptions\NoGatewayAvailableException $exception) {
                 $message = $exception->getException('yunpian')->getMessage();
