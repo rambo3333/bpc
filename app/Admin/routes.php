@@ -23,6 +23,9 @@ Route::group([
     $router->resource('banners', BannersController::class);
     $router->resource('applies', AppliesController::class);
     $router->resource('users', UsersController::class);
+    $router->resource('orders', OrdersController::class);
+    $router->get('orders', 'OrdersController@index')->name('admin.orders.index');
+    $router->get('orders/{order}', 'OrdersController@show')->name('admin.orders.show');
 
     $router->get('/api/series', 'ApisController@series');
     $router->post('/api/check', 'ApisController@check')->name('admin.api.check');
