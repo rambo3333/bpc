@@ -26,6 +26,8 @@ Route::group([
     $router->resource('orders', OrdersController::class);
     $router->get('orders', 'OrdersController@index')->name('admin.orders.index');
     $router->get('orders/{order}', 'OrdersController@show')->name('admin.orders.show');
+    $router->post('orders/{order}/confirm', 'OrdersController@confirm')->name('admin.orders.confirm');
+    $router->post('orders/{order}/refund', 'OrdersController@refund')->name('admin.orders.refund');
 
     $router->get('/api/series', 'ApisController@series');
     $router->post('/api/check', 'ApisController@check')->name('admin.api.check');

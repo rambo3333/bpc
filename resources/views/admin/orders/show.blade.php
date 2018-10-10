@@ -47,7 +47,32 @@
                     <td>贷款方式：</td>
                     <td>{{ $order->dkfs }}</td>
                 </tr>
+                <tr>
+                    <td>首付款：</td>
+                    <td>{{ $order->sfk_text }}</td>
+                </tr>
+                <tr>
+                    <td>贷款额：</td>
+                    <td>{{ $order->dkje }}</td>
+                </tr>
+                <tr>
+                    <td>GPS定位系统：</td>
+                    <td>{{ $order->gps }}</td>
+                </tr>
+                <tr>
+                    <td>抵押费：</td>
+                    <td>{{ $order->dyf }}</td>
+                </tr>
+                <tr>
+                    <td>手续费等杂费：</td>
+                    <td>{{ $order->sxf }}</td>
+                </tr>
+                <tr>
+                    <td>续保金：</td>
+                    <td>{{ $order->xbj }}</td>
+                </tr>
             @endif
+
             <tr>
                 <td>购置税：</td>
                 <td colspan="3">{{ $order->gzs }}</td>
@@ -65,30 +90,122 @@
                 <td colspan="3">{{ $order->jqx }}</td>
             </tr>
             <tr>
+                <td colspan="4" style="background-color: #00c0ef">商业险：</td>
+            </tr>
+            <tr>
+                <td>第三者责任险：</td>
+                <td colspan="3">{{ $order->dszzrx_text }} （{{ $order->dszzrx }}）</td>
+            </tr>
+            <tr>
+                <td>车辆损失险：</td>
+                <td colspan="3">{{ $order->clssx }}</td>
+            </tr>
+            <tr>
+                <td>全车盗抢险：</td>
+                <td colspan="3">{{ $order->qcdqx }}</td>
+            </tr>
+            <tr>
+                <td>玻璃单独破碎险：</td>
+                <td colspan="3">{{ $order->blddpsx }}</td>
+            </tr>
+            <tr>
+                <td>车上人员责任险（司机）：</td>
+                <td colspan="3">{{ $order->sj_csryzrx_text }} （{{ $order->sj_csryzrx }}）</td>
+            </tr>
+            <tr>
+                <td>车上人员责任险（乘客）：</td>
+                <td colspan="3">{{ $order->ck_csryzrx_text }} （{{ $order->ck_csryzrx }}）</td>
+            </tr>
+            <tr>
+                <td>不计免赔特约险：</td>
+                <td colspan="3">{{ $order->bjmptyx }}</td>
+            </tr>
+            <tr>
+                <td>无法找到第三方：</td>
+                <td colspan="3">{{ $order->wfzddsf }}</td>
+            </tr>
+            <tr>
+                <td>自燃损失险：</td>
+                <td colspan="3">{{ $order->zrssx }}</td>
+            </tr>
+            <tr>
+                <td>商业险合计：</td>
+                <td colspan="3">{{ $order->syxhj }}</td>
+            </tr>
+            <tr>
+                <td>商业险折扣：</td>
+                <td colspan="3">{{ $order->syxzk / 10 }} 折</td>
+            </tr>
+            <tr>
+                <td>折扣后金额：</td>
+                <td colspan="3">{{ $order->zkhje }}</td>
+            </tr>
+            <tr>
+                <td colspan="4" style="background-color: #00c0ef">方案费用：</td>
+            </tr>
+            @if ($order->program == '全款')
+            <tr>
+                <td>成交总价：</td>
+                <td colspan="3">{{ $order->cjzj }}</td>
+            </tr>
+            @else
+            <tr>
+                <td>首付款总额：</td>
+                <td>{{ $order->sfk_total }}</td>
+            </tr>
+            <tr>
+                <td>月供金额：</td>
+                <td>{{ $order->ygje }}</td>
+            </tr>
+            <tr>
+                <td>月供期数：</td>
+                <td>{{ $order->ygqs }}</td>
+            </tr>
+            @endif
+            <tr>
+                <td>服务费：</td>
+                <td colspan="3">{{ $order->fwf }}</td>
+            </tr>
+            <tr>
                 <td>备注：</td>
                 <td colspan="3">{{ $order->remark }}</td>
             </tr>
-            {{--<tr>
-                <td>收货地址</td>
-                <td colspan="3">{{ $order->address['address'] }} {{ $order->address['zip'] }} {{ $order->address['contact_name'] }} {{ $order->address['contact_phone'] }}</td>
-            </tr>
-            <tr>
-                <td rowspan="{{ $order->items->count() + 1 }}">商品列表</td>
-                <td>商品名称</td>
-                <td>单价</td>
-                <td>数量</td>
-            </tr>
-            @foreach($order->items as $item)
-                <tr>
-                    <td>{{ $item->product->title }} {{ $item->productSku->title }}</td>
-                    <td>￥{{ $item->price }}</td>
-                    <td>{{ $item->amount }}</td>
-                </tr>
-            @endforeach--}}
             <tr>
                 <td>定金：</td>
-                <td colspan="3">￥{{ $order->total_amount }}</td>
+                <td colspan="3">￥{{ $order->total_amount / 100 }}</td>
             </tr>
+            <!-- 如果订单未确认，展示运费输入框 -->
+            @if($order->status === \App\Models\Order::STATUS_PAID && $order->contract === 0)
+                <tr>
+                    <td colspan="4">
+                        <form action="{{ route('admin.orders.confirm', [$order->id]) }}" method="post" class="form-inline">
+                            <!-- 别忘了 csrf token 字段 -->
+                            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                            <div class="form-group {{ $errors->has('yf') ? 'has-error' : '' }}">
+                                <label for="yf" class="control-label">运费：</label>
+                                <input type="text" id="yf" name="yf" value="" class="form-control" placeholder="输入运费">
+                                @if($errors->has('yf'))
+                                    @foreach($errors->get('yf') as $msg)
+                                        <span class="help-block">{{ $msg }}</span>
+                                    @endforeach
+                                @endif
+                            </div>
+                            <button type="submit" class="btn btn-success" id="ship-btn">确认订单</button>
+                        </form>
+
+                        <form action="{{ route('admin.orders.refund', [$order->id]) }}" method="post" class="form-inline">
+                            <!-- 别忘了 csrf token 字段 -->
+                            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn btn-success" id="ship-btn">退款</button>
+                        </form>
+                    </td>
+                </tr>
+            @else
+                <tr>
+                    <td>运费：</td>
+                    <td colspan="3">{{ $order->yf }}</td>
+                </tr>
+            @endif
             </tbody>
         </table>
     </div>

@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
+    protected $fillable = ['contract', 'yf', ''];
+
     const STATUS_NOT_PAID = 'not_paid'; //待支付
     const STATUS_PAID = 'paid'; //支付成功
     const STATUS_PAID_FAIL = 'paid_fail'; //支付失败
