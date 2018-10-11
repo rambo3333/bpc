@@ -175,9 +175,9 @@
                 <td colspan="3">￥{{ $order->total_amount / 100 }}</td>
             </tr>
             <!-- 如果订单未确认，展示运费输入框 -->
-            @if($order->status === \App\Models\Order::STATUS_PAID && $order->contract === 0)
+            @if($order->closed === 0)
                 <tr>
-                    <td colspan="4">
+                    <td>
                         <form action="{{ route('admin.orders.confirm', [$order->id]) }}" method="post" class="form-inline">
                             <!-- 别忘了 csrf token 字段 -->
                             <input type="hidden" name="_token" value="{{ csrf_token() }}">
@@ -192,11 +192,12 @@
                             </div>
                             <button type="submit" class="btn btn-success" id="ship-btn">确认订单</button>
                         </form>
-
+                    </td>
+                    <td colspan="3">
                         <form action="{{ route('admin.orders.refund', [$order->id]) }}" method="post" class="form-inline">
                             <!-- 别忘了 csrf token 字段 -->
                             <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                            <button type="submit" class="btn btn-success" id="ship-btn">退款</button>
+                            <button type="submit" class="btn btn-danger" id="ship-btn">退款</button>
                         </form>
                     </td>
                 </tr>
@@ -205,6 +206,12 @@
                     <td>运费：</td>
                     <td colspan="3">{{ $order->yf }}</td>
                 </tr>
+                @if($order->refund_status === \App\Models\Order::REFUND_STATUS_SUCCESS)
+                <tr>
+                    <td>退款状态：</td>
+                    <td colspan="3">{{ \App\Models\Order::$refundStatusMap[$order->refund_status] }}</td>
+                </tr>
+                @endif
             @endif
             </tbody>
         </table>

@@ -7,7 +7,7 @@ use Ramsey\Uuid\Uuid;
 
 class Order extends Model
 {
-    protected $fillable = ['contract', 'yf', 'refund_status', 'refund_no'];
+    protected $fillable = ['contract', 'yf', 'status', 'refund_status', 'refund_no', 'extra', 'closed'];
 
     const STATUS_NOT_PAID = 'not_paid'; //待支付
     const STATUS_PAID = 'paid'; //支付成功

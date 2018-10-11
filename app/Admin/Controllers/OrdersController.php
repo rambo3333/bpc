@@ -99,12 +99,17 @@ class OrdersController extends Controller
             $grid->column('user.name', '昵称');
             $grid->column('worker.name', '业务员');
             $grid->program('购车方案');
-            $grid->status('退款状态')->display(function($value) {
+            $grid->status('订单状态')->display(function($value) {
                 return Order::$statusMap[$value];
+            });
+            $grid->closed('订单是否完成')->display(function($value) {
+                return $value == 1 ? '是' : '否';
             });
 
             $grid->paid_at('支付时间')->sortable();
             $grid->created_at('下单时间');
+
+            $grid->model()->orderBy('id', 'desc');
         });
     }
 
@@ -143,10 +148,10 @@ class OrdersController extends Controller
 
         // 通过事务执行 sql
         \DB::transaction(function() use ($order, $data) {
-            // 将订单状态改为已确认（已签合同）
+            // 将订单状态改为已确认
             $order->update([
                 'yf' => $data['yf'],
-                'contract'   => 1,
+                'closed'   => 1,
             ]);
 
             //剩业务员的操作
@@ -183,26 +188,33 @@ class OrdersController extends Controller
         $app = Factory::payment(config('wechat.payment.default'));
 
         // 参数分别为：微信订单号、商户退款单号、订单金额、退款金额、其他参数
-        $result = $app->refund->byTransactionId($order->payment_no, $refundNo, $order->total_amount, $order->total_amount, [
-            //'notify_url' => config('wechat.payment.refund.notify_url'),
-        ]);
+        $result = $app->refund->byTransactionId($order->payment_no,
+                                                $refundNo,
+                                                $order->total_amount,
+                                                $order->total_amount,
+                                                []);
 
-        if ($result['refund_status'] === 'SUCCESS') {
-            // 退款成功，将订单退款状态改成退款成功
-            $order->update([
-                'status' => Order::STATUS_REFUND,
-                'refund_status' => Order::REFUND_STATUS_SUCCESS,
-            ]);
+        if ($result['return_code'] === 'SUCCESS') {
+            if ($result['result_code'] === 'SUCCESS') {
+                // 退款成功，将订单退款状态改成退款成功
+                $order->update([
+                    'status' => Order::STATUS_REFUND,
+                    'refund_status' => Order::REFUND_STATUS_SUCCESS,
+                    'closed' => 1,
+                ]);
 
-            return redirect()->back();
+                return redirect()->back();
+            } else {
+                // 退款失败，将具体状态存入 extra 字段，并表退款状态改成失败
+                $order->update([
+                    'refund_status' => Order::REFUND_STATUS_FAILED,
+                    'extra' => $result['err_code_des']
+                ]);
+
+                throw new InvalidRequestException($result['err_code_des']);
+            }
         } else {
-            // 退款失败，将具体状态存入 extra 字段，并表退款状态改成失败
-            $order->update([
-                'refund_status' => Order::REFUND_STATUS_FAILED,
-                'extra' => $result['refund_status']
-            ]);
-
-            throw new InvalidRequestException('退款失败');
+            throw new InvalidRequestException('通信失败，请稍后再通知我');
         }
     }
 }
