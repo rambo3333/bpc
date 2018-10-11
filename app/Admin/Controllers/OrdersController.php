@@ -12,6 +12,7 @@ use Encore\Admin\Layout\Content;
 use Encore\Admin\Show;
 use Illuminate\Http\Request;
 use App\Exceptions\InvalidRequestException;
+use EasyWeChat\Factory;
 
 class OrdersController extends Controller
 {
@@ -169,19 +170,39 @@ class OrdersController extends Controller
             throw new InvalidRequestException('该订单已经退款，请勿重复退款');
         }
 
-        /*$refundNo = Order::getAvailableRefundNo();
-        app('wechat_pay')->refund([
-            'out_trade_no' => $order->no, // 之前的订单流水号
-            'total_fee' => $order->total_amount * 100, //原订单金额，单位分
-            'refund_fee' => $order->total_amount * 100, // 要退款的订单金额，单位分
-            'out_refund_no' => $refundNo, // 退款订单号
-            // 微信支付的退款结果并不是实时返回的，而是通过退款回调来通知，因此这里需要配上退款回调接口地址
-            'notify_url' => 'http://requestbin.fullcontact.com/******' // 由于是开发环境，需要配成 requestbin 地址
+        $refundNo = Order::getAvailableRefundNo();
+
+        // 通过事务执行 sql
+        \DB::transaction(function() use ($order, $refundNo) {
+            // 将订单状态改为已确认（已签合同）
+            $order->update([
+                'refund_no' => $refundNo,
+            ]);
+        });
+
+        $app = Factory::payment(config('wechat.payment.default'));
+
+        // 参数分别为：微信订单号、商户退款单号、订单金额、退款金额、其他参数
+        $result = $app->refund->byTransactionId($order->payment_no, $refundNo, $order->total_amount, $order->total_amount, [
+            //'notify_url' => config('wechat.payment.refund.notify_url'),
         ]);
-        // 将订单状态改成退款中
-        $order->update([
-            'refund_no' => $refundNo,
-            'refund_status' => Order::REFUND_STATUS_PROCESSING,
-        ]);*/
+
+        if ($result['refund_status'] === 'SUCCESS') {
+            // 退款成功，将订单退款状态改成退款成功
+            $order->update([
+                'status' => Order::STATUS_REFUND,
+                'refund_status' => Order::REFUND_STATUS_SUCCESS,
+            ]);
+
+            return redirect()->back();
+        } else {
+            // 退款失败，将具体状态存入 extra 字段，并表退款状态改成失败
+            $order->update([
+                'refund_status' => Order::REFUND_STATUS_FAILED,
+                'extra' => $result['refund_status']
+            ]);
+
+            throw new InvalidRequestException('退款失败');
+        }
     }
 }
