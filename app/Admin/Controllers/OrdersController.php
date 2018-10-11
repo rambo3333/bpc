@@ -158,6 +158,17 @@ class OrdersController extends Controller
 
     public function refund(Order $order, Request $request)
     {
+        // 判断订单是否已付款
+        if (!$order->paid_at) {
+            throw new InvalidRequestException('该订单未支付，不可退款');
+        }
+
+        // 判断订单退款状态是否正确
+        if ($order->refund_status === Order::REFUND_STATUS_PROCESSING ||
+            $order->refund_status === Order::REFUND_STATUS_SUCCESS) {
+            throw new InvalidRequestException('该订单已经退款，请勿重复退款');
+        }
+
         /*$refundNo = Order::getAvailableRefundNo();
         app('wechat_pay')->refund([
             'out_trade_no' => $order->no, // 之前的订单流水号
