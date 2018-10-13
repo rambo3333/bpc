@@ -317,7 +317,8 @@ class OrdersController extends Controller
             'level_name' => $worker->getLevelName($worker->level),
             'level' => $worker->level,
             'commission_rate' => $commission_rate * 100 . '%',
-            'commission' => $commission
+            'commission' => $commission,
+            'created_at' => date('Y-m-d H:i:s'),
         ];
         \DB::table('commission_detail')->insert($commission_detail_data);
 
@@ -329,6 +330,7 @@ class OrdersController extends Controller
             'year' => date('Y'),
             'month' => date('m'),
             'worker_id' => $worker->id,
+            'created_at' => date('Y-m-d H:i:s'),
         ];
         $commission_month = \DB::table('commission_month')->where($commission_month_where)->first();
 
