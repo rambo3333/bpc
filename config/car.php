@@ -27,4 +27,20 @@ return [
     'level2_star_max' => 3,
     'level3_star_max' => 4,
     'level4_star_max' => 5,
+
+    //级别名称
+    'level1_name' => '新手上路',
+    'level2_name' => '车手',
+    'level3_name' => '车帝',
+    'level4_name' => '车神',
+
+    //管理升级要求
+    'manage_level1' => 5,
+    'manage_level2' => 5,
+    'manage_level3' => 5,
+
+    //管理提成点数
+    'relation_level1' => 0.04,
+    'relation_level2' => 0.03,
+    'relation_level3' => 0.02,
 ];
