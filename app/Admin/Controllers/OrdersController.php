@@ -330,7 +330,6 @@ class OrdersController extends Controller
             'year' => date('Y'),
             'month' => date('m'),
             'worker_id' => $worker->id,
-            'created_at' => date('Y-m-d H:i:s'),
         ];
         $commission_month = \DB::table('commission_month')->where($commission_month_where)->first();
 
@@ -338,6 +337,7 @@ class OrdersController extends Controller
             'year' => date('Y'),
             'month' => date('m'),
             'worker_id' => $worker->id,
+            'created_at' => date('Y-m-d H:i:s'),
         ];
         if (!empty($commission_month)) {
             $commission += $commission_month->commission;
