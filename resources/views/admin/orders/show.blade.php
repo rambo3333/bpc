@@ -12,7 +12,7 @@
             <tbody>
             <tr>
                 <td>买家：</td>
-                <td>@if ($order->user->name) {{$order->user->name}} @endif</td>
+                <td>@if ($order->user->name) {{$order->user->name}} - {{ $order->user->mobile }} @endif</td>
                 <td>业务员：</td>
                 <td>@if ($order->worker) {{$order->worker->name}} @endif</td>
             </tr>
