@@ -53,6 +53,8 @@ class WorkersController extends Controller
                 $show->id_number_image_z('身份证正面')->image();
                 $show->id_number_image_f('身份证反面')->image();
                 $show->bank_image('银行卡')->image();
+                $show->bank_name('银行名称');
+                $show->bank_no('银行卡号');
                 $show->bank('开户行');
 
                 $show->created_at('创建时间');
@@ -139,10 +141,11 @@ class WorkersController extends Controller
                     Rule::unique('workers')->ignore($form->model()->id)
                 ];
             });
-            $form->image('id_number_image_z', '身份证正面')->uniqueName()->rules('required');
-            $form->image('id_number_image_f', '身份证反面')->uniqueName()->rules('required');
-            $form->image('bank_image', '银行卡')->uniqueName()->rules('required');
-            $form->text('bank', '开户支行')->rules('required');
+            $form->image('id_number_image_z', '身份证正面')->uniqueName();
+            $form->image('id_number_image_f', '身份证反面')->uniqueName();
+            $form->text('bank_name', '银行名称')->default('');
+            $form->text('bank_no', '银行卡号')->default('');
+            $form->text('bank', '开户支行')->default('');
             $form->select('parent_id', '邀请人')->options(Worker::getSeletOptions());
 
             $form->display('created_at', 'Created At');

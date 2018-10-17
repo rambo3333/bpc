@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Worker extends Model
 {
     protected $fillable = ['agent_id', 'franchisee_id', 'password', 'name', 'mobile', 'worker_no',
-                            'id_number_image_z', 'id_number_image_f', 'other_image', 'bank_image', 'bank', 'parent_id',
-                            'user_id', 'is_effect', 'level', 'star', 'manage_level', 'sale_total_num', 'sale_num',
-                            'upgraded_at'];
+                            'id_number_image_z', 'id_number_image_f', 'other_image', 'bank_image', 'bank_name',
+                            'bank_no', 'bank', 'parent_id', 'user_id', 'is_effect', 'level', 'star', 'manage_level',
+                            'sale_total_num', 'sale_num', 'upgraded_at'];
 
     public function agent()
     {
